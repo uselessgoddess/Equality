@@ -19,6 +19,11 @@ namespace Platform::Equality
         {
             {std::equal_to<TOther>{}(left, right)} -> std::same_as<bool>;
         }
+        ||
+        requires(TOther left, TOther right)
+        {
+            {left == right} -> std::same_as<bool>;
+        }
 #endif
     bool operator==(const std::any& object, TOther other)
     {

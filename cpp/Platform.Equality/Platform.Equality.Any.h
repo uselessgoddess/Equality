@@ -9,11 +9,10 @@
 #include <concepts>
 #include <stdexcept>
 
-
 namespace Platform::Equality
 {
     template<class T>
-    inline auto to_any_hash_visitor(auto func)
+    inline auto __to_any_equal_visitor(auto func)
     {
         return std::pair<std::type_index, std::function<bool(std::any, std::any)>>
         {
@@ -28,8 +27,8 @@ namespace Platform::Equality
         };
     }
 
-    #define BASE_VISITOR_REGISTER(Type) to_any_hash_visitor<Type>([](Type a, Type b) {return a == b;})
-    #define VISITOR_REGISTER(Type, Func) to_any_hash_visitor<Type>([](Type a, Type b) {return Func;})
+    #define BASE_VISITOR_REGISTER(Type) __to_any_equal_visitor<Type>([](Type a, Type b) {return a == b;})
+    #define VISITOR_REGISTER(Type, Func) __to_any_equal_visitor<Type>([](Type a, Type b) {return Func;})
     static std::unordered_map<std::type_index, std::function<bool(std::any, std::any)>>
     any_equal_visitor {
             BASE_VISITOR_REGISTER(short int),
@@ -39,19 +38,21 @@ namespace Platform::Equality
             BASE_VISITOR_REGISTER(unsigned long int),
             BASE_VISITOR_REGISTER(long long int),
             BASE_VISITOR_REGISTER(unsigned long long int),
+            BASE_VISITOR_REGISTER(float),
+            BASE_VISITOR_REGISTER(double),
+            BASE_VISITOR_REGISTER(long double),
 
             VISITOR_REGISTER(const char*, std::string(a) == std::string(b)),
 
             BASE_VISITOR_REGISTER(const std::string&),
-
     };
     #undef BASE_VISITOR_REGISTER
     #undef VISITOR_REGISTER
 
     template<class T>
-    inline void register_any_hash_visitor(auto func)
+    inline void register_any_equal_visitor(auto func)
     {
-        any_equal_visitor.insert(to_any_hash_visitor<T>(func));
+        any_equal_visitor.insert(__to_any_equal_visitor<T>(func));
     }
 
     template<typename TOther>

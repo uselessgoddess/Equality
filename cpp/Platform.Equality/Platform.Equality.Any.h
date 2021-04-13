@@ -91,7 +91,7 @@ namespace std
     template<>
     struct equal_to<std::any>
     {
-        bool operator()(const std::any& object, const auto& other)
+        bool operator()(const std::any& object, const auto& other) const
         {
             return Platform::Equality::operator==(object, other);
         }

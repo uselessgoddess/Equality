@@ -29,6 +29,20 @@ namespace PlatformEqualityTests
         }
 
         {
+            auto a = "i love green stuff";
+            auto b = "i love green stuff";
+
+            ASSERT_TRUE(std::any(a) == std::any(b));
+        }
+
+        {
+            auto a = (std::string)"i love green stuff";
+            auto b = (std::string)"i love green stuff";
+
+            ASSERT_TRUE(std::any(a) == std::any(b));
+        }
+
+        {
             std::vector<int> a {1, 2, 3, 4};
             std::vector<int> b {1, 2, 3, 4};
 

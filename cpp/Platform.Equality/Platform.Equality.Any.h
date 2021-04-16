@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PLATFORM_EQUALITY_ANY_H
-#define PLATFORM_EQUALITY_ANY_H
+#ifndef PLATFORM_EQUALITY_ANY
+#define PLATFORM_EQUALITY_ANY
 
 #include <any>
 #include <functional>
@@ -11,24 +11,23 @@
 
 namespace Platform::Equality
 {
-
     namespace Internal
     {
-        template<class T, class Foo>
-        inline auto ToAnyEqualVisitor(Foo&& func)
+        template<class TValue, class TEqualityComparer>
+        inline auto ToAnyEqualVisitor(TEqualityComparer&& func)
         {
             return std::pair<std::type_index, std::function<bool(const std::any&, const std::any&)>>
             {
-                    std::type_index(typeid(T)),
-                    [func = std::forward<Foo>(func)](const std::any& a, const std::any& b) -> std::size_t
+                    std::type_index(typeid(TValue)),
+                    [func = std::forward<TEqualityComparer>(func)](const std::any& a, const std::any& b) -> std::size_t
                     {
-                        if constexpr (std::is_void_v<T>)
+                        if constexpr (std::is_void_v<TValue>)
                         {
                             return func();
                         }
                         else
                         {
-                            return func(std::any_cast<T>(a), std::any_cast<T>(b));
+                            return func(std::any_cast<TValue>(a), std::any_cast<TValue>(b));
                         }
                     }
             };

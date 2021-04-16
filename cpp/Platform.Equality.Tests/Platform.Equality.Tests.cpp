@@ -1,5 +1,6 @@
-#include <gtest/gtest.h>
 #include <Platform.Equality.h>
+#include <gtest/gtest.h>
+
 
 namespace Platform::Equality::Tests
 {
@@ -9,35 +10,35 @@ namespace Platform::Equality::Tests
             int a = 0x228;
             int b = 0x1337;
 
-            ASSERT_TRUE(std::any(a) != std::any(b));
+            ASSERT_NE(std::any(a), std::any(b));
         }
 
         {
             int a = 0x177013;
             float b = 0x177013;
 
-            ASSERT_TRUE(std::any(a) != std::any(b));
+            ASSERT_EQ(std::any(a), std::any(b));
         }
 
         {
             auto a = "i love green stuff";
             auto b = (std::string)"i love green stuff";
 
-            ASSERT_TRUE(std::any(a) != std::any(b));
+            ASSERT_NE(std::any(a), std::any(b));
         }
 
         {
             auto a = "i love green stuff";
             auto b = "i love green stuff";
 
-            ASSERT_TRUE(std::any(a) == std::any(b));
+            ASSERT_EQ(std::any(a), std::any(b));
         }
 
         {
             auto a = (std::string)"i love green stuff";
             auto b = (std::string)"i love green stuff";
 
-            ASSERT_TRUE(std::any(a) == std::any(b));
+            ASSERT_EQ(std::any(a), std::any(b));
         }
 
         {
@@ -55,7 +56,7 @@ namespace Platform::Equality::Tests
             while(steps--)
             {
                 int number = rand();
-                ASSERT_TRUE(std::any(number) == std::any(number));
+                ASSERT_EQ(std::any(number), std::any(number));
             }
         }
 
@@ -68,11 +69,11 @@ namespace Platform::Equality::Tests
 
                 if(a == b)
                 {
-                    ASSERT_TRUE(std::any(a) == std::any(b));
+                    ASSERT_EQ(std::any(a), std::any(b));
                 }
                 else
                 {
-                    ASSERT_TRUE(std::any(a) != std::any(b));
+                    ASSERT_NE(std::any(a), std::any(b));
                 }
             }
         }
@@ -84,14 +85,14 @@ namespace Platform::Equality::Tests
             struct Nil {};
             RegisterEqualityComparer<Nil>([](auto a, auto b){return true;});
 
-            ASSERT_TRUE(std::any(Nil{}) == std::any(Nil{}));
+            ASSERT_EQ(std::any(Nil{}), std::any(Nil{}));
         }
 
         {
             struct Nil {};
             RegisterEqualityComparer<Nil>([](auto a, auto b){return false;});
 
-            ASSERT_FALSE(std::any(Nil{}) == std::any(Nil{}));
+            ASSERT_NE(std::any(Nil{}), std::any(Nil{}));
         }
     }
 }

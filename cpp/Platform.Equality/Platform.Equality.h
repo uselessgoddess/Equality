@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PLATFORM_EQUALITY_H
-#define PLATFORM_EQUALITY_H
+#ifndef PLATFORM_EQUALITY
+#define PLATFORM_EQUALITY
 
 #include "Platform.Equality.Any.h"
 

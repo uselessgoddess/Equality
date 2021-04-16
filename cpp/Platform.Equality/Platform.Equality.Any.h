@@ -47,9 +47,7 @@ namespace Platform::Equality
                 BASE_VISITOR_REGISTER(float),
                 BASE_VISITOR_REGISTER(double),
                 BASE_VISITOR_REGISTER(long double),
-
                 BASE_VISITOR_REGISTER(const char*),
-
                 BASE_VISITOR_REGISTER(const std::string&),
         };
         #undef BASE_VISITOR_REGISTER

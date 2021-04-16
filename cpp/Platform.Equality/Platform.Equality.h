@@ -5,4 +5,4 @@
 
 #include "Platform.Equality.Any.h"
 
-#endif //PLATFORM_EQUALITY_H
+#endif //PLATFORM_EQUALITY

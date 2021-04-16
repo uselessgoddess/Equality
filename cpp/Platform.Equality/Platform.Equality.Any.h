@@ -110,4 +110,4 @@ namespace std
     };
 }
 
-#endif //PLATFORM_EQUALITY_ANY_H
+#endif //PLATFORM_EQUALITY_ANY

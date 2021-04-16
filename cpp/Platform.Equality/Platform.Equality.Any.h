@@ -11,48 +11,55 @@
 
 namespace Platform::Equality
 {
-    template<class T>
-    inline auto __to_any_equal_visitor(auto func)
+
+    namespace Internal
     {
-        return std::pair<std::type_index, std::function<bool(std::any, std::any)>>
+        template<class T, class Foo>
+        inline auto ToAnyEqualVisitor(Foo&& func)
         {
-                std::type_index(typeid(T)),
-                [func](std::any a, std::any b) -> std::size_t
-                {
-                    if constexpr (std::is_void_v<T>)
-                        return func();
-                    else
-                        return func(std::any_cast<T>(a), std::any_cast<T>(b));
-                }
+            return std::pair<std::type_index, std::function<bool(const std::any&, const std::any&)>>
+            {
+                    std::type_index(typeid(T)),
+                    [func = std::forward<Foo>(func)](const std::any& a, const std::any& b) -> std::size_t
+                    {
+                        if constexpr (std::is_void_v<T>)
+                        {
+                            return func();
+                        }
+                        else
+                        {
+                            return func(std::any_cast<T>(a), std::any_cast<T>(b));
+                        }
+                    }
+            };
+        }
+
+        #define BASE_VISITOR_REGISTER(Type) ToAnyEqualVisitor<Type>(std::equal_to<Type>{})
+        static std::unordered_map<std::type_index, std::function<bool(const std::any&, const std::any&)>>
+        AnyEqualityComparers
+        {
+                BASE_VISITOR_REGISTER(short int),
+                BASE_VISITOR_REGISTER(unsigned short int),
+                BASE_VISITOR_REGISTER(int),
+                BASE_VISITOR_REGISTER(unsigned int),
+                BASE_VISITOR_REGISTER(unsigned long int),
+                BASE_VISITOR_REGISTER(long long int),
+                BASE_VISITOR_REGISTER(unsigned long long int),
+                BASE_VISITOR_REGISTER(float),
+                BASE_VISITOR_REGISTER(double),
+                BASE_VISITOR_REGISTER(long double),
+
+                BASE_VISITOR_REGISTER(const char*),
+
+                BASE_VISITOR_REGISTER(const std::string&),
         };
+        #undef BASE_VISITOR_REGISTER
     }
 
-    #define BASE_VISITOR_REGISTER(Type) __to_any_equal_visitor<Type>([](Type a, Type b) {return a == b;})
-    #define VISITOR_REGISTER(Type, Func) __to_any_equal_visitor<Type>([](Type a, Type b) {return Func;})
-    static std::unordered_map<std::type_index, std::function<bool(std::any, std::any)>>
-    any_equal_visitor {
-            BASE_VISITOR_REGISTER(short int),
-            BASE_VISITOR_REGISTER(unsigned short int),
-            BASE_VISITOR_REGISTER(int),
-            BASE_VISITOR_REGISTER(unsigned int),
-            BASE_VISITOR_REGISTER(unsigned long int),
-            BASE_VISITOR_REGISTER(long long int),
-            BASE_VISITOR_REGISTER(unsigned long long int),
-            BASE_VISITOR_REGISTER(float),
-            BASE_VISITOR_REGISTER(double),
-            BASE_VISITOR_REGISTER(long double),
-
-            VISITOR_REGISTER(const char*, std::string(a) == std::string(b)),
-
-            BASE_VISITOR_REGISTER(const std::string&),
-    };
-    #undef BASE_VISITOR_REGISTER
-    #undef VISITOR_REGISTER
-
     template<class T>
-    inline void register_any_equal_visitor(auto func)
+    inline void RegisterEqualityComparer(auto&& func)
     {
-        any_equal_visitor.insert(__to_any_equal_visitor<T>(func));
+        Internal::AnyEqualityComparers.insert(Internal::ToAnyEqualVisitor<T>(func));
     }
 
     template<typename TOther>
@@ -78,10 +85,10 @@ namespace Platform::Equality
         if(object.type() != other.type())
             return false;
 
-        if(!any_equal_visitor.contains(object.type()))
+        if(!Internal::AnyEqualityComparers.contains(object.type()))
             throw std::runtime_error(std::string("Equal function for type ").append(object.type().name()).append(" is unregistered"));
 
-        auto equaler = any_equal_visitor[object.type()];
+        auto equaler = Internal::AnyEqualityComparers[object.type()];
         return equaler(object, other);
     }
 }

@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include <Platform.Equality.h>
 
-using namespace Platform::Equality;
-
-namespace PlatformEqualityTests
+namespace Platform::Equality::Tests
 {
     TEST(EqualityTest, BaseAnyEqual)
     {
@@ -77,6 +75,23 @@ namespace PlatformEqualityTests
                     ASSERT_TRUE(std::any(a) != std::any(b));
                 }
             }
+        }
+    }
+
+    TEST(EqualityTest, RegisterTest)
+    {
+        {
+            struct Nil {};
+            RegisterEqualityComparer<Nil>([](auto a, auto b){return true;});
+
+            ASSERT_TRUE(std::any(Nil{}) == std::any(Nil{}));
+        }
+
+        {
+            struct Nil {};
+            RegisterEqualityComparer<Nil>([](auto a, auto b){return false;});
+
+            ASSERT_FALSE(std::any(Nil{}) == std::any(Nil{}));
         }
     }
 }

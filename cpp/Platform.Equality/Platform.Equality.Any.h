@@ -19,7 +19,7 @@ namespace Platform::Equality
             return std::pair<std::type_index, std::function<bool(const std::any&, const std::any&)>>
             {
                     std::type_index(typeid(TValue)),
-                    [func = std::forward<TEqualityComparer>(func)](const std::any& a, const std::any& b) -> std::size_t
+                    [func = std::forward<TEqualityComparer>(func)](const std::any& left, const std::any& right) -> std::size_t
                     {
                         if constexpr (std::is_void_v<TValue>)
                         {
@@ -27,7 +27,7 @@ namespace Platform::Equality
                         }
                         else
                         {
-                            return func(std::any_cast<TValue>(a), std::any_cast<TValue>(b));
+                            return func(std::any_cast<TValue>(left), std::any_cast<TValue>(right));
                         }
                     }
             };
@@ -82,13 +82,19 @@ namespace Platform::Equality
     bool operator==(const std::any& object, const std::any& other)
     {
         if(object.type() != other.type())
+        {
             return false;
+        }
 
         if(!Internal::AnyEqualityComparers.contains(object.type()))
-            throw std::runtime_error(std::string("Equal function for type ").append(object.type().name()).append(" is unregistered"));
+        {
+            throw std::runtime_error(std::string("Equal function for type ")
+                                                .append(object.type().name())
+                                                .append(" is unregistered"));
+        }
 
-        auto equaler = Internal::AnyEqualityComparers[object.type()];
-        return equaler(object, other);
+        auto comparer = Internal::AnyEqualityComparers[object.type()];
+        return comparer(object, other);
     }
 }
 

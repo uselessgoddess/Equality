@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(Platform.Equality)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-
 include_directories(../Platform.Equality)
 
 include(FetchContent)
@@ -23,4 +20,6 @@ endif()
 
 add_executable(Platform.Equality.Tests Platform.Equality.Tests.cpp)
 
-target_link_libraries(Platform.Equality.Tests gtest gtest_main)
+target_compile_features(Platform.Equality.Tests PUBLIC cxx_std_20)
+
+target_link_libraries(Platform.Equality.Tests PUBLIC gtest gtest_main)

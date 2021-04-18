@@ -13,7 +13,7 @@ namespace std
     requires (!std::equality_comparable<T>)
     struct equal_to<T>
     {
-        bool operator()(const T& left, const T& right)
+        constexpr bool operator()(const T& left, const T& right) const
         {
             return ranges::equal(left, right);
         }

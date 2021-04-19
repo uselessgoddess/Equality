@@ -4,10 +4,11 @@
 #define PLATFORM_EQUALITY_ANY
 
 #include <any>
-#include <functional>
-#include <typeindex>
 #include <concepts>
 #include <stdexcept>
+#include <typeindex>
+
+#include "Platform.Equality.Base.h"
 
 namespace Platform::Equality
 {
@@ -16,8 +17,7 @@ namespace Platform::Equality
         template<class TValue, class TEqualityComparer>
         inline auto ToAnyEqualVisitor(TEqualityComparer&& func)
         {
-            return std::pair<std::type_index, std::function<bool(const std::any&, const std::any&)>>
-            {
+            return std::pair<std::type_index, EqualityComparerFunctionType<std::any>>{
                 std::type_index(typeid(TValue)),
                 [func = std::forward<TEqualityComparer>(func)](const std::any& left, const std::any& right) -> std::size_t
                 {
@@ -29,28 +29,26 @@ namespace Platform::Equality
                     {
                         return func(std::any_cast<TValue>(left), std::any_cast<TValue>(right));
                     }
-                }
-            };
+                }};
         }
 
-        #define BASE_VISITOR_REGISTER(Type) ToAnyEqualVisitor<Type>(std::equal_to<Type>{})
-        static std::unordered_map<std::type_index, std::function<bool(const std::any&, const std::any&)>>
-        AnyEqualityComparers
-        {
-            BASE_VISITOR_REGISTER(short int),
-            BASE_VISITOR_REGISTER(unsigned short int),
-            BASE_VISITOR_REGISTER(int),
-            BASE_VISITOR_REGISTER(unsigned int),
-            BASE_VISITOR_REGISTER(unsigned long int),
-            BASE_VISITOR_REGISTER(long long int),
-            BASE_VISITOR_REGISTER(unsigned long long int),
-            BASE_VISITOR_REGISTER(float),
-            BASE_VISITOR_REGISTER(double),
-            BASE_VISITOR_REGISTER(long double),
-            BASE_VISITOR_REGISTER(const char*),
-            BASE_VISITOR_REGISTER(const std::string&),
+        #define EQUALITY_COMPARER(Type) ToAnyEqualVisitor<Type>(std::equal_to<Type>{})
+        static std::unordered_map<std::type_index, EqualityComparerFunctionType<std::any>>
+            AnyEqualityComparers{
+            EQUALITY_COMPARER(short int),
+            EQUALITY_COMPARER(unsigned short int),
+            EQUALITY_COMPARER(int),
+            EQUALITY_COMPARER(unsigned int),
+            EQUALITY_COMPARER(unsigned long int),
+            EQUALITY_COMPARER(long long int),
+            EQUALITY_COMPARER(unsigned long long int),
+            EQUALITY_COMPARER(float),
+            EQUALITY_COMPARER(double),
+            EQUALITY_COMPARER(long double),
+            EQUALITY_COMPARER(const char*),
+            EQUALITY_COMPARER(const std::string&),
         };
-        #undef BASE_VISITOR_REGISTER
+        #undef EQUALITY_COMPARER
     }
 
     template<class T>
@@ -68,16 +66,17 @@ namespace Platform::Equality
 
     bool operator==(const std::any& object, const std::any& other)
     {
-        if(object.type() != other.type())
+        if (object.type() != other.type())
         {
             return false;
         }
 
-        if(!Internal::AnyEqualityComparers.contains(object.type()))
+        if (!Internal::AnyEqualityComparers.contains(object.type()))
         {
+            // TODO later use std::format
             throw std::runtime_error(std::string("Equal function for type ")
-                                                .append(object.type().name())
-                                                .append(" is unregistered"));
+                                         .append(object.type().name())
+                                         .append(" is unregistered"));
         }
 
         const auto& comparer = Internal::AnyEqualityComparers[object.type()];
@@ -97,4 +96,4 @@ namespace std
     };
 }
 
-#endif //PLATFORM_EQUALITY_ANY
+#endif

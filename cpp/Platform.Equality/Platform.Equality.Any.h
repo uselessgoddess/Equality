@@ -34,7 +34,7 @@ namespace Platform::Equality
 
         #define EQUALITY_COMPARER(Type) ToAnyEqualVisitor<Type>(std::equal_to<Type>{})
         static std::unordered_map<std::type_index, EqualityComparerFunctionType<std::any>>
-            AnyEqualityComparers{
+        AnyEqualityComparers{
             EQUALITY_COMPARER(short int),
             EQUALITY_COMPARER(unsigned short int),
             EQUALITY_COMPARER(int),

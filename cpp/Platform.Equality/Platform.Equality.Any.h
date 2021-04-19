@@ -34,20 +34,21 @@ namespace Platform::Equality
 
         #define EQUALITY_COMPARER(Type) ToAnyEqualVisitor<Type>(std::equal_to<Type>{})
         static std::unordered_map<std::type_index, EqualityComparerFunctionType<std::any>>
-        AnyEqualityComparers{
-            EQUALITY_COMPARER(short int),
-            EQUALITY_COMPARER(unsigned short int),
-            EQUALITY_COMPARER(int),
-            EQUALITY_COMPARER(unsigned int),
-            EQUALITY_COMPARER(unsigned long int),
-            EQUALITY_COMPARER(long long int),
-            EQUALITY_COMPARER(unsigned long long int),
-            EQUALITY_COMPARER(float),
-            EQUALITY_COMPARER(double),
-            EQUALITY_COMPARER(long double),
-            EQUALITY_COMPARER(const char*),
-            EQUALITY_COMPARER(const std::string&),
-        };
+            AnyEqualityComparers
+            {
+                EQUALITY_COMPARER(short int),
+                EQUALITY_COMPARER(unsigned short int),
+                EQUALITY_COMPARER(int),
+                EQUALITY_COMPARER(unsigned int),
+                EQUALITY_COMPARER(unsigned long int),
+                EQUALITY_COMPARER(long long int),
+                EQUALITY_COMPARER(unsigned long long int),
+                EQUALITY_COMPARER(float),
+                EQUALITY_COMPARER(double),
+                EQUALITY_COMPARER(long double),
+                EQUALITY_COMPARER(const char*),
+                EQUALITY_COMPARER(const std::string&),
+            };
         #undef EQUALITY_COMPARER
     }
 

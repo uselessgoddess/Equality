@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <typeindex>
 
-#include "Platform.Equality.Base.h"
+#include "Platform.Equality.EqualityComparerFunctionType.h"
 
 namespace Platform::Equality
 {

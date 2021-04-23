@@ -1,7 +1,8 @@
-#include <Platform.Equality.h>
-#include <gtest/gtest.h>
 
-namespace Platform::Equality::Tests
+#include <gtest/gtest.h>
+#include <Platform.Equality.h>
+
+namespace Platform::Equality
 {
     TEST(EqualityTest, BaseAnyEqual)
     {
@@ -38,7 +39,7 @@ namespace Platform::Equality::Tests
         {
             std::vector<int> a {1, 2, 3, 4};
             std::vector<int> b {1, 2, 3, 4};
-            //EXPECT_ANY_THROW(std::any(a) == std::any(b));
+            EXPECT_ANY_THROW(std::any(a) == std::any(b));
         }
     }
 

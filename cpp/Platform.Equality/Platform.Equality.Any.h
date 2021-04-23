@@ -83,6 +83,7 @@ namespace Platform::Equality
         const auto& comparer = Internal::AnyEqualityComparers[object.type()];
         return comparer(object, other);
     }
+
 }
 
 namespace std

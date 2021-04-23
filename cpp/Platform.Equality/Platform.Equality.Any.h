@@ -58,13 +58,6 @@ namespace Platform::Equality
         Internal::AnyEqualityComparers.insert(Internal::ToAnyEqualVisitor<T>(std::forward<decltype(func)>(func)));
     }
 
-    template<typename TOther>
-    requires std::equality_comparable<TOther>
-    bool operator==(const std::any& object, TOther other)
-    {
-        return std::any_cast<TOther>(object) == other;
-    }
-
     bool operator==(const std::any& object, const std::any& other)
     {
         if (object.type() != other.type())
@@ -83,7 +76,6 @@ namespace Platform::Equality
         const auto& comparer = Internal::AnyEqualityComparers[object.type()];
         return comparer(object, other);
     }
-
 }
 
 namespace std

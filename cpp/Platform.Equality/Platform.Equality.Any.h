@@ -22,14 +22,7 @@ namespace Platform::Equality
                 std::type_index(typeid(TValue)),
                 [func = std::forward<TEqualityComparer>(func)](const std::any& left, const std::any& right) -> bool
                 {
-                    if constexpr (std::is_void_v<TValue>)
-                    {
-                        return func();
-                    }
-                    else
-                    {
-                        return func(std::any_cast<TValue>(left), std::any_cast<TValue>(right));
-                    }
+                    return func(std::any_cast<TValue>(left), std::any_cast<TValue>(right));
                 }};
         }
 
@@ -48,7 +41,7 @@ namespace Platform::Equality
                 EQUALITY_COMPARER(double),
                 EQUALITY_COMPARER(long double),
                 EQUALITY_COMPARER(const char*),
-                EQUALITY_COMPARER(const std::string&),
+                EQUALITY_COMPARER(std::string),
             };
         #undef EQUALITY_COMPARER
     }

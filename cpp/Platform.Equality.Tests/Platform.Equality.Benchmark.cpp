@@ -45,16 +45,16 @@ namespace Platform::Equality::Benchmark
 
     namespace Range
     {
-        namespace Internal
+        namespace
         {
-            inline constexpr int test_size = 10000;
+            constexpr int test_size = 10000;
         }
 
         static void Foreach_VectorCompare(benchmark::State& state)
         {
             srand(time(nullptr));
 
-            std::vector<int> a(Internal::test_size);
+            std::vector<int> a(test_size);
             for (auto& it : a)
             {
                 it = rand();
@@ -83,7 +83,7 @@ namespace Platform::Equality::Benchmark
         {
             srand(time(nullptr));
 
-            std::vector<int> list(Internal::test_size);
+            std::vector<int> list(test_size);
             for (auto& it : list)
             {
                 it = rand();
@@ -105,7 +105,7 @@ namespace Platform::Equality::Benchmark
         {
             srand(time(nullptr));
 
-            std::vector<int> a(Internal::test_size);
+            std::vector<int> a(test_size);
             for (auto& it : a)
             {
                 it = rand();

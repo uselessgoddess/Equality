@@ -15,11 +15,12 @@ namespace Platform::Equality
     namespace Internal
     {
         template<class TValue, class TEqualityComparer>
+        requires std::is_object_v<TValue>
         inline auto ToAnyEqualVisitor(TEqualityComparer&& func)
         {
             return std::pair<std::type_index, EqualityComparerFunctionType<std::any>>{
                 std::type_index(typeid(TValue)),
-                [func = std::forward<TEqualityComparer>(func)](const std::any& left, const std::any& right) -> std::size_t
+                [func = std::forward<TEqualityComparer>(func)](const std::any& left, const std::any& right) -> bool
                 {
                     if constexpr (std::is_void_v<TValue>)
                     {

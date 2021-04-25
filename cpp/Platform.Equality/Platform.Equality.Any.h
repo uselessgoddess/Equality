@@ -74,10 +74,7 @@ namespace std
 
         if (!Internal::AnyEqualityComparers.contains(object.type()))
         {
-            // TODO later use std::format
-            throw std::runtime_error(std::string("Equal function for type ")
-                                         .append(object.type().name())
-                                         .append(" is unregistered"));
+            throw std::runtime_error(std::string{"Equal function for type ", object.type().name(), " is unregistered"});
         }
 
         const auto& comparer = Internal::AnyEqualityComparers[object.type()];

@@ -2,13 +2,13 @@
 #include <gtest/gtest.h>
 
 #include <span>
+#include <list>
 
 namespace Platform::Equality
 {
     TEST(EqualityTest, BaseAnyEqual)
     {
         {
-
             int a = 0x228;
             int b = 0x1337;
             ASSERT_NE(std::any(a), std::any(b));
@@ -22,7 +22,7 @@ namespace Platform::Equality
 
         {
             auto a = "i love green stuff";
-            auto b = (std::string) "i love green stuff";
+            auto b = std::string{ "i love green stuff" };
             ASSERT_NE(std::any(a), std::any(b));
         }
 
@@ -33,8 +33,8 @@ namespace Platform::Equality
         }
 
         {
-            auto a = std::string{"i love green stuff"};
-            auto b = std::string{"i love green stuff"};
+            auto a = std::string{ "i love green stuff" };
+            auto b = std::string{ "i love green stuff" };
             ASSERT_EQ(std::any(a), std::any(b));
         }
 
@@ -43,6 +43,16 @@ namespace Platform::Equality
             std::vector<int> b{ 1, 2, 3, 4 };
             EXPECT_ANY_THROW(std::any(a) == std::any(b));
         }
+    }
+
+    TEST(EqualityTest, AdvancedAnyEqual)
+    {
+        {
+            int a = 12;
+            std::any b = a;
+            ASSERT_EQ(a, b);
+        }
+
     }
 
     TEST(EqualityTest, AggressiveAnyTest)
@@ -69,14 +79,24 @@ namespace Platform::Equality
     TEST(EqualityTest, RegisterTest)
     {
         {
-            struct Nil {};
-            RegisterEqualityComparer<Nil>([](auto a, auto b) { return true; });
+            struct Nil
+            {
+            };
+            RegisterEqualityComparer<Nil>([](auto a, auto b)
+                                          {
+                                              return true;
+                                          });
             ASSERT_EQ(std::any(Nil{}), std::any(Nil{}));
         }
 
         {
-            struct Nil {};
-            RegisterEqualityComparer<Nil>([](auto a, auto b) { return false; });
+            struct Nil
+            {
+            };
+            RegisterEqualityComparer<Nil>([](auto a, auto b)
+                                          {
+                                              return false;
+                                          });
             ASSERT_NE(std::any(Nil{}), std::any(Nil{}));
         }
     }
@@ -86,8 +106,8 @@ namespace Platform::Equality
         {
             std::vector<int> a{ 1, 2, 3, 4, 5 };
             std::vector<int> b{ 1, 2, 3, 4, 5 };
-            auto left = std::span{a};
-            auto right = std::span{b};
+            auto left = std::span{ a };
+            auto right = std::span{ b };
             ASSERT_EQ(a, b);
             ASSERT_TRUE(std::equal_to<std::span<int>>{}(left, right));
         }
@@ -95,10 +115,16 @@ namespace Platform::Equality
         {
             std::vector<int> a{ 1, 2, 3, 4, 5 };
             std::vector<int> b{ 5, 4, 3, 2, 1 };
-            auto left = std::span{a};
-            auto right = std::span{b};
+            auto left = std::span{ a };
+            auto right = std::span{ b };
             ASSERT_NE(a, b);
             ASSERT_FALSE(std::equal_to<std::span<int>>{}(left, right));
         }
     }
+}
+
+int func(auto&& a)
+{
+    std::cout << a.size();
+    return 0;
 }

@@ -68,12 +68,38 @@ namespace std
 
         if (!Internal::AnyEqualityComparers.contains(object.type()))
         {
-            throw std::runtime_error(std::string{"Equal function for type ", object.type().name(), " is unregistered"});
+            // TODO later use std::format
+            throw std::runtime_error(std::string("Equal function for type ")
+                                         .append(object.type().name())
+                                         .append(" is unregistered"));
         }
 
         const auto& comparer = Internal::AnyEqualityComparers[object.type()];
         return comparer(object, other);
     }
+
+    template<typename TAny, typename TOther>
+    requires std::same_as<TAny, std::any> // FIXME mark in the documentation why you need it
+    bool operator==(const TAny& object, const TOther& other)
+    {
+        return std::any_cast<TOther>(object) == other;
+    }
+
+    template<typename TAny, typename TOther>
+    requires std::same_as<TAny, std::any> // FIXME mark in the documentation why you need it
+    bool operator==(const TOther& object, const TAny& other)
+    {
+        return std::any_cast<TOther>(other) == object;
+    }
+
+    template<>
+    struct equal_to<std::any>
+    {
+        constexpr auto operator()(auto&& object, auto&& other)
+        {
+            return object == other;
+        }
+    };
 }
 
 #endif

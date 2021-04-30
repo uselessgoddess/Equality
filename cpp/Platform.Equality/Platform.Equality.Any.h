@@ -91,15 +91,6 @@ namespace std
     {
         return std::any_cast<TOther>(other) == object;
     }
-
-    template<>
-    struct equal_to<std::any>
-    {
-        constexpr auto operator()(auto&& object, auto&& other)
-        {
-            return object == other;
-        }
-    };
 }
 
 #endif

@@ -99,6 +99,7 @@ namespace Platform::Equality::Benchmark
                 benchmark::DoNotOptimize(result = std::equal_to<std::span<int>>{}(a, b));
             }
         }
+
         BENCHMARK(PlatformEquality_VectorCompare);
 
         static void STL_VectorCompare(benchmark::State& state)

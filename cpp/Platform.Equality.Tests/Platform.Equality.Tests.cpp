@@ -4,7 +4,7 @@
 #include <span>
 #include <list>
 
-namespace Platform::Equality
+namespace Platform::Equality::Tests
 {
     TEST(EqualityTest, BaseAnyEqual)
     {
@@ -121,10 +121,4 @@ namespace Platform::Equality
             ASSERT_FALSE(std::equal_to<std::span<int>>{}(left, right));
         }
     }
-}
-
-int func(auto&& a)
-{
-    std::cout << a.size();
-    return 0;
 }

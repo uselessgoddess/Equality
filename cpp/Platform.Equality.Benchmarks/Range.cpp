@@ -1,63 +1,27 @@
 #include <Platform.Equality.h>
 #include <benchmark/benchmark.h>
 
-#include <ctime>
-#include <iostream>
+#include <chrono>
+#include <random>
 #include <span>
-#include <any>
 
-namespace Platform::Equality::Benchmark
+
+namespace Platform::Equality::Benchmarks
 {
-    namespace Any
-    {
-        static void AnyCompare(benchmark::State& state)
-        {
-            srand(time(nullptr));
-
-            for (auto _ : state)
-            {
-                auto a = rand();
-                auto b = rand();
-
-                bool result;
-                benchmark::DoNotOptimize(result = std::any(a) == std::any(b));
-            }
-        }
-
-        BENCHMARK(AnyCompare);
-
-        static void NormalCompare(benchmark::State& state)
-        {
-            srand(time(nullptr));
-
-            for (auto _ : state)
-            {
-                auto a = rand();
-                auto b = rand();
-
-                bool result;
-                benchmark::DoNotOptimize(result = a == b);
-            }
-        }
-
-        BENCHMARK(NormalCompare);
-    }
-
     namespace Range
     {
         namespace
         {
-            constexpr int test_size = 10000;
+            constexpr int test_size = 100000;
+            std::mt19937 random(std::chrono::high_resolution_clock().now().time_since_epoch().count());
         }
 
         static void Foreach_VectorCompare(benchmark::State& state)
         {
-            srand(time(nullptr));
-
             std::vector<int> a(test_size);
             for (auto& it : a)
             {
-                it = rand();
+                it = random();
             }
 
             auto b = a;
@@ -81,17 +45,17 @@ namespace Platform::Equality::Benchmark
 
         static void PlatformEquality_VectorCompare(benchmark::State& state)
         {
-            srand(time(nullptr));
-
-            std::vector<int> list(test_size);
-            for (auto& it : list)
+            std::vector<int> list1(test_size);
+            for (auto& it : list1)
             {
-                it = rand();
+                it = random();
             }
 
+            auto list2 = list1;
+
             // std::span not have operator==
-            auto a = std::span<int>(list); // span have Range initializer ==> std::span<int>(list.begin(), list.size())
-            auto b = std::span<int>(list);
+            auto a = std::span<int>(list1); // span have Range initializer ==> std::span<int>(list.begin(), list.size())
+            auto b = std::span<int>(list2);
 
             bool result;
             for (auto _ : state)
@@ -104,12 +68,10 @@ namespace Platform::Equality::Benchmark
 
         static void STL_VectorCompare(benchmark::State& state)
         {
-            srand(time(nullptr));
-
             std::vector<int> a(test_size);
             for (auto& it : a)
             {
-                it = rand();
+                it = random();
             }
             std::vector<int> b = a;
 
@@ -123,5 +85,3 @@ namespace Platform::Equality::Benchmark
         BENCHMARK(STL_VectorCompare);
     }
 }
-
-BENCHMARK_MAIN();

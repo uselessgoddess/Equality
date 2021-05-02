@@ -15,7 +15,7 @@ namespace std
     {
         constexpr bool operator()(const T& left, const T& right) const
         {
-            return ranges::equal(left, right);
+            return std::ranges::equal(left, right);
         }
     };
 }

@@ -52,9 +52,8 @@ namespace Platform::Equality::Benchmarks
             }
 
             auto list2 = list1;
-
-            // std::span not have operator==
-            auto a = std::span<int>(list1); // span have Range initializer ==> std::span<int>(list.begin(), list.size())
+            
+            auto a = std::span<int>(list1);
             auto b = std::span<int>(list2);
 
             bool result;

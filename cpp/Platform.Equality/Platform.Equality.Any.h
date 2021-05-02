@@ -55,8 +55,10 @@ namespace Platform::Equality
 
 namespace std
 {
+    // template<TAny> requires same_as<TAny, any> used to simulate explicit constructor on std::any
+
     template<typename TAny>
-    requires std::same_as<TAny, std::any> // FIXME mark in the documentation why you need it
+    requires std::same_as<TAny, std::any> // see 58 line
     bool operator==(const TAny& object, const TAny& other)
     {
         using namespace Platform::Equality;
@@ -79,14 +81,14 @@ namespace std
     }
 
     template<typename TAny, typename TOther>
-    requires std::same_as<TAny, std::any> // FIXME mark in the documentation why you need it
+    requires std::same_as<TAny, std::any> // see 58 line
     bool operator==(const TAny& object, const TOther& other)
     {
         return std::any_cast<TOther>(object) == other;
     }
 
     template<typename TAny, typename TOther>
-    requires std::same_as<TAny, std::any> // FIXME mark in the documentation why you need it
+    requires std::same_as<TAny, std::any> // see 58 line
     bool operator==(const TOther& object, const TAny& other)
     {
         return std::any_cast<TOther>(other) == object;

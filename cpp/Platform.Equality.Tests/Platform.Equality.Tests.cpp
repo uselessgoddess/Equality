@@ -52,7 +52,6 @@ namespace Platform::Equality::Tests
             std::any b = a;
             ASSERT_EQ(a, b);
         }
-
     }
 
     TEST(EqualityTest, AggressiveAnyTest)

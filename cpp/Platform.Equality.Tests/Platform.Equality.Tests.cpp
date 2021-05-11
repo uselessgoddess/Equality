@@ -52,6 +52,11 @@ namespace Platform::Equality::Tests
             std::any b = a;
             ASSERT_EQ(a, b);
         }
+        {
+            ASSERT_EQ((std::any)1, (const std::any)1);
+            ASSERT_EQ((std::any)1, (const std::any&)1);
+            ASSERT_EQ((std::any)1, (std::any&&)1);
+        }
     }
 
     TEST(EqualityTest, AggressiveAnyTest)

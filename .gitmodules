@@ -1,0 +1,3 @@
+[submodule "Platform.Settings"]
+	path = Settings
+	url = https://github.com/linksplatform/Platform.Settings
